@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < 4; y++)
             {
                 // Instanciar el prefab en una posición del espacio 3D
-                Vector3 posicion = new Vector3(x * 2, 0, y * 2); // Ajustar la posición de cada objeto
-                cards[1].transform.position = posicion;
+                Vector3 posicion = new Vector3((x * 2)-3.5, 0, (y * 2)-4); // Ajustar la posición de cada objeto
+                cards[i].transform.position = posicion;
                 i++;
             }
         }
