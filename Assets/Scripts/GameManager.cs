@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        
+
+
+
         cardsSelected[0]=null;
         cardsSelected[1]=null;
         cartesAdivinades=0;
