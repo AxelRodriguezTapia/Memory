@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject[] cards;
+    public GameObject[] cardSons;
     private double id_double=0;
     private GameObject[] cardsSelected = new GameObject[2];
     private int cartesAdivinades;
@@ -19,7 +20,8 @@ public class GameManager : MonoBehaviour
         cardsSelected[1]=null;
         cartesAdivinades=0;
         cards = GameObject.FindGameObjectsWithTag("CardTag");
-        foreach(GameObject card in cards){
+        cardSons = GameObject.FindGameObjectsWithTag("CardTagSon");
+        foreach(GameObject card in cardSons){
             card.GetComponent<CardScript>().setId(id_double);
             id_double=id_double+0.5;
             Debug.Log(card.GetComponent<CardScript>().getId());
@@ -34,7 +36,7 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < 4; y++)
             {
                 // Instanciar el prefab en una posición del espacio 3D
-                Vector3 posicion = new Vector3((float)((x * 2)-3.5), 0, (y * 2)-4); // Ajustar la posición de cada objeto
+                Vector3 posicion = new Vector3((float)((x * 2)-2), (float)-1.3, (y * 2)-2); // Ajustar la posición de cada objeto
                 cards[i].transform.position = posicion;
                 i++;
             }

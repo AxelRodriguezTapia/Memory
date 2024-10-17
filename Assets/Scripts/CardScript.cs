@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CardScript : MonoBehaviour
 {
-
     public GameObject figura;
     private GameObject gm;
     private int id;
