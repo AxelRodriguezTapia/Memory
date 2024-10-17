@@ -15,11 +15,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        
-
-
-
         cardsSelected[0]=null;
         cardsSelected[1]=null;
         cartesAdivinades=0;
@@ -30,8 +25,9 @@ public class GameManager : MonoBehaviour
             Debug.Log(card.GetComponent<CardScript>().getId());
         }
     
-        int i=0;
+        Mezclar(cards);
 
+        int i=0;
         // Asignar e instanciar los objetos
         for (int x = 0; x < 4; x++)
         {
@@ -125,6 +121,21 @@ public class GameManager : MonoBehaviour
         if(num==12){
             cardsSelected[0]=null;
             cardsSelected[1]=null;
+        }
+    }
+
+    void Mezclar(GameObject[] array)
+    {
+        int n = array.Length;
+        for (int i = 0; i < n; i++)
+        {
+            // Generar un índice aleatorio entre i y n (exclusivo)
+            int randomIndex = Random.Range(i, n);
+
+            // Intercambiar el elemento actual con el elemento aleatorio
+            GameObject temp = array[i];
+            array[i] = array[randomIndex];
+            array[randomIndex] = temp;
         }
     }
 }
