@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 20977031830266948}
   - component: {fileID: 5039125412536930098}
   - component: {fileID: 7949092384405911723}
-  - component: {fileID: 6462695880788663504}
+  - component: {fileID: 9089282319736831358}
   m_Layer: 0
   m_Name: CardPrefab
   m_TagString: Untagged
@@ -106,8 +106,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1.7276886, z: 1}
+  m_Center: {x: 0, y: 0.36384428, z: 0}
 --- !u!114 &7949092384405911723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   figura: {fileID: 1460644221494074278}
---- !u!95 &6462695880788663504
+--- !u!95 &9089282319736831358
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -131,7 +131,7 @@ Animator:
   m_GameObject: {fileID: 863108501294555596}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 913c11dc08895064a9b7d008e4cee3d7, type: 2}
+  m_Controller: {fileID: 9100000, guid: a5c6a0ee18abd2c4ea5dba1df92966ad, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
