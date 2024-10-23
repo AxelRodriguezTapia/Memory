@@ -77,14 +77,13 @@ public class GameManager : MonoBehaviour
         }
         if(cartesAdivinades==8){
             Debug.Log("End Game");
+            audioSource.clip = audioClips[4]; //Audio GameOver
+            audioSource.PlayOneShot();
             if(timeNum < PlayerPrefs.GetInt("BestScore", 0)){
                 PlayerPrefs.SetInt("BestScore", (int)timeNum);
             }
-            // Obtener el nombre de la escena actual
-            string currentSceneName = SceneManager.GetActiveScene().name;
-        
-            // Cargar de nuevo la escena actual
-            SceneManager.LoadScene(currentSceneName);
+            cartesAdivinades+=1;
+            Invoke("FinishScene",7);
         }
         
         
@@ -102,9 +101,13 @@ public class GameManager : MonoBehaviour
         
         if(cardsSelected[0]==null && cardsSelected[1]==null){
             cardsSelected[0]=cardtouched.gameObject;
+            audioSource.clip = audioClips[1]; //Audio Hola
+            audioSource.PlayOneShot();
             //Debug.Log("Carta seleccionada");
         }else{
             cardsSelected[1]=cardtouched.gameObject;
+            audioSource.clip = audioClips[1]; //Audio Hola
+            audioSource.PlayOneShot();
         }   
         
     }
@@ -122,10 +125,14 @@ public class GameManager : MonoBehaviour
                 int intentsNum = PlayerPrefs.GetInt("Intents", 0)+1;
                 intentsText.text = "Intents: "+ intentsNum;
                 PlayerPrefs.SetInt("Intents", intentsNum);
+                audioSource.clip = audioClips[2]; //Audio Nonono
+                audioSource.PlayOneShot();
                 borrarSeleccionados(12);
             }else{
                 Debug.Log("Cartas iguals!!" +cardsSelected[0].GetComponent<CardScript>().getId()+" "+cardsSelected[1].GetComponent<CardScript>().getId());
                 cartesAdivinades++;
+                audioSource.clip = audioClips[3]; //Audio Oleee
+                audioSource.PlayOneShot();
                 borrarSeleccionados(12);
             }
         }
@@ -166,7 +173,7 @@ public class GameManager : MonoBehaviour
     void AccionBoton()
     {
         audioSource.clip = audioClips[0]; //Clash royale inici
-        audioSource.Play();
+        audioSource.PlayOneShot();
         cardSons[0].GetComponent<CardScript>().setStartVar(true);
         startButton.gameObject.SetActive(false);
         startGameTrigger=true;
@@ -196,5 +203,12 @@ public class GameManager : MonoBehaviour
                 i++;
             }
         }
+    }
+    void FinishScene(){
+        // Obtener el nombre de la escena actual
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        
+        // Cargar de nuevo la escena actual
+        SceneManager.LoadScene(currentSceneName);
     }
 }

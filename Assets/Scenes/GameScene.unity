@@ -1109,7 +1109,11 @@ MonoBehaviour:
   titolText: {fileID: 1187630785}
   intentsText: {fileID: 1587089939}
   audioClips:
-  - {fileID: 8300000, guid: bb1f05d7f4272b04b96cb63f176d30bc, type: 3}
+  - {fileID: 8300000, guid: 6fc9e52912d4fa24a8fb6ff2271b9e91, type: 3}
+  - {fileID: 8300000, guid: e72f7a7a595f8e64ea9b76ac10c738c0, type: 3}
+  - {fileID: 8300000, guid: fafcd8b6f01a8b043be68d879bc4ac86, type: 3}
+  - {fileID: 8300000, guid: 75a2a50444db0d14b8e7bbeaf74248b7, type: 3}
+  - {fileID: 8300000, guid: 74c5bb677ced5104181605c78af0cb54, type: 3}
   audioSource: {fileID: 290325926}
 --- !u!4 &787657379
 Transform:
@@ -1333,8 +1337,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00632564, y: 0.8775975, z: -0.47921655, w: -0.011584103}
-  m_LocalPosition: {x: -0.115685284, y: 9.066246, z: 7.433592}
+  m_LocalRotation: {x: 0.00021334211, y: 0.70858216, z: -0.7056283, w: 0.00021164885}
+  m_LocalPosition: {x: -0.30830532, y: 9.847616, z: 0.30315384}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
