@@ -26,7 +26,11 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI bestTime;
     public TextMeshProUGUI titolText;
     public TextMeshProUGUI intentsText;
+    public AudioClip[] audioClips; // Array para almacenar varios clips de audio
+    public AudioSource audioSource;  // Asigna el AudioSource desde el Inspector
 
+    //audioSource.clip = audioClips[index];
+    //audioSource.Play();
 
     // Start is called before the first frame update
     void Start()
@@ -161,6 +165,8 @@ public class GameManager : MonoBehaviour
 
     void AccionBoton()
     {
+        audioSource.clip = audioClips[0]; //Clash royale inici
+        audioSource.Play();
         cardSons[0].GetComponent<CardScript>().setStartVar(true);
         startButton.gameObject.SetActive(false);
         startGameTrigger=true;
