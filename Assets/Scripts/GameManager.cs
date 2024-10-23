@@ -1,6 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine.UI;
+using System;
+using System.Linq.Expressions;
 using UnityEngine;
+using Unity.VisualScripting;
+using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -11,42 +19,43 @@ public class GameManager : MonoBehaviour
     private int cartesAdivinades;
     private bool clickTrigger=false;
     private float clickCooldown=0;
+    private bool startGameTrigger=false;
+    public Button startButton;
+    public TextMeshProUGUI timeText;
+    private double timeNum;
+    public TextMeshProUGUI bestTime;
+    public TextMeshProUGUI titolText;
+    public TextMeshProUGUI intentsText;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        if (startButton != null)
+        {
+            startButton.onClick.AddListener(AccionBoton);
+        }
+        titolText.text="Turtle Memory";
+        intentsText.text="Intents: "+PlayerPrefs.GetInt("Intents", 0);
+        bestTime.text="Best Time: "+PlayerPrefs.GetInt("BestScore", 0);//Buscar el best time en vete tu a saber donde
+        timeText.text="Time: "+0;
         cardsSelected[0]=null;
         cardsSelected[1]=null;
         cartesAdivinades=0;
         cards = GameObject.FindGameObjectsWithTag("CardTag");
         cardSons = GameObject.FindGameObjectsWithTag("CardTagSon");
-        foreach(GameObject card in cardSons){
-            card.GetComponent<CardScript>().setId(id_double);
-            id_double=id_double+0.5;
-            Debug.Log(card.GetComponent<CardScript>().getId());
-        }
-    
-        Mezclar(cards);
-
-        int i=0;
-        // Asignar e instanciar los objetos
-        for (int x = 0; x < 4; x++)
-        {
-            for (int y = 0; y < 4; y++)
-            {
-                // Instanciar el prefab en una posición del espacio 3D
-                Vector3 posicion = new Vector3((float)((x * 2)-2), (float)-1.3, (y * 2)-2); // Ajustar la posición de cada objeto
-                cards[i].transform.position = posicion;
-                i++;
-            }
-        }
 
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (startGameTrigger){
+            timeNum+=Time.deltaTime;
+            timeText.text=("Time: "+(int)timeNum);
+            //Debug.Log(timeNum);
+        }
         if(clickTrigger){
             clickCooldown+=Time.deltaTime;
             if(clickCooldown>=1){
@@ -64,6 +73,14 @@ public class GameManager : MonoBehaviour
         }
         if(cartesAdivinades==8){
             Debug.Log("End Game");
+            if(timeNum < PlayerPrefs.GetInt("BestScore", 0)){
+                PlayerPrefs.SetInt("BestScore", (int)timeNum);
+            }
+            // Obtener el nombre de la escena actual
+            string currentSceneName = SceneManager.GetActiveScene().name;
+        
+            // Cargar de nuevo la escena actual
+            SceneManager.LoadScene(currentSceneName);
         }
         
         
@@ -86,8 +103,6 @@ public class GameManager : MonoBehaviour
             cardsSelected[1]=cardtouched.gameObject;
         }   
         
-        
-        
     }
 
     //public void allCardsDown(){
@@ -100,9 +115,12 @@ public class GameManager : MonoBehaviour
             if(cardsSelected[0].GetComponent<CardScript>().getId()!=cardsSelected[1].GetComponent<CardScript>().getId()){
                 cardsSelected[0].GetComponent<CardScript>().esconder();
                 cardsSelected[1].GetComponent<CardScript>().esconder();
+                int intentsNum = PlayerPrefs.GetInt("Intents", 0)+1;
+                intentsText.text = "Intents: "+ intentsNum;
+                PlayerPrefs.SetInt("Intents", intentsNum);
                 borrarSeleccionados(12);
             }else{
-                //Debug.Log("Cartas iguals!!" +cardsSelected[0].GetComponent<CardScript>().getId()+" "+cardsSelected[1].GetComponent<CardScript>().getId());
+                Debug.Log("Cartas iguals!!" +cardsSelected[0].GetComponent<CardScript>().getId()+" "+cardsSelected[1].GetComponent<CardScript>().getId());
                 cartesAdivinades++;
                 borrarSeleccionados(12);
             }
@@ -138,6 +156,39 @@ public class GameManager : MonoBehaviour
             GameObject temp = array[i];
             array[i] = array[randomIndex];
             array[randomIndex] = temp;
+        }
+    }
+
+    void AccionBoton()
+    {
+        cardSons[0].GetComponent<CardScript>().setStartVar(true);
+        startButton.gameObject.SetActive(false);
+        startGameTrigger=true;
+        titolText.text="";
+        PlayerPrefs.SetInt("Intents", 0);
+        intentsText.text="Intents: "+PlayerPrefs.GetInt("Intents", 0);
+        foreach(GameObject card in cardSons){
+            card.GetComponent<CardScript>().setId(id_double);
+            id_double=id_double+0.5;
+            Debug.Log(card.GetComponent<CardScript>().getId());
+            Debug.Log("Materials/FigureMaterial" + card.GetComponent<CardScript>().getId());
+            Material materialCargado = Resources.Load<Material>("Materials/FigureMaterial" + card.GetComponent<CardScript>().getId());
+            card.GetComponent<CardScript>().getFiguraRenderer().material = materialCargado;
+        }
+    
+        Mezclar(cards);
+
+        int i=0;
+        // Asignar e instanciar los objetos
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                // Instanciar el prefab en una posición del espacio 3D
+                Vector3 posicion = new Vector3((float)((x * 2)-2), (float)-1.3, (y * 2)-2); // Ajustar la posición de cada objeto
+                cards[i].transform.position = posicion;
+                i++;
+            }
         }
     }
 }

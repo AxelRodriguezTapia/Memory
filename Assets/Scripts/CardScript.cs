@@ -8,10 +8,12 @@ public class CardScript : MonoBehaviour
     private GameObject gm;
     private int id;
     public Material image;
+    public static bool startVar;
 
     // Start is called before the first frame update
     void Start()
     {
+        startVar=false;
         gm = GameObject.FindGameObjectWithTag("GameController"); // Encuentra el GameManager
         Renderer renderer = figura.GetComponent<Renderer>();
         renderer.material = image;
@@ -25,6 +27,15 @@ public class CardScript : MonoBehaviour
         }
     }
 
+    public Renderer getFiguraRenderer(){
+        Renderer renderer = figura.GetComponent<Renderer>();
+        return renderer;
+    }
+
+    public void setStartVar(bool var){
+        startVar=var;
+    }
+
     public void setId(double idp){
         id=(int)idp;
         //set color
@@ -36,7 +47,10 @@ public class CardScript : MonoBehaviour
 
     void OnMouseDown()
     {
-        //Trigger del game object
+        if(!startVar){
+            return;//Vigilar que funcioni
+        }
+
         if(gm.GetComponent<GameManager>().canClickTrigger()){
             gm.GetComponent<GameManager>().setClickTrigger(true);
             AnimatorStateInfo stateInfo = GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
