@@ -14,7 +14,7 @@ public class CardScript : MonoBehaviour
     void Start()
     {
         startVar=false;
-        gm = GameObject.FindGameObjectWithTag("GameController"); // Encuentra el GameManager
+        gm = GameObject.FindGameObjectWithTag("GameController"); // Troba el GameManager
         Renderer renderer = figura.GetComponent<Renderer>();
         renderer.material = image;
     }
@@ -22,11 +22,51 @@ public class CardScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space)){
-            esconder();
+    }
+
+    //Listener de quan fas click a la carta.
+    void OnMouseDown()
+    {
+        //Comprovem si ha iniciat el joc.
+        if(!startVar){
+            return;
+        }
+        if(gm.GetComponent<GameManager>().canClickTrigger()){
+            gm.GetComponent<GameManager>().setClickTrigger(true);
+            AnimatorStateInfo stateInfo = GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+            if(stateInfo.IsName("FigureDown")){
+                if(gm.gameObject.GetComponent<GameManager>().hiHaPuesto()){
+                    if(stateInfo.IsName("FigureDown")){
+                        Animator an = GetComponent<Animator>();
+                        an.SetTrigger("FigureShowTrigger");
+                    }
+                    gm.GetComponent<GameManager>().cardTouched(gameObject);
+                }
+            }
         }
     }
 
+    //Fer la animacio de amagat
+    public void esconder(){
+        AnimatorStateInfo stateInfo = GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("FigureUp"))
+        {
+            Animator an = GetComponent<Animator>();
+            an.SetTrigger("FigureHideTrigger");
+        }
+    }
+
+    //Fer la animacio de ensenyar la carta
+    public void showFigure(){
+        AnimatorStateInfo stateInfo = GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("FigureDown"))
+        {
+            Animator an = GetComponent<Animator>();
+            an.SetTrigger("FigureShowTrigger");
+        }
+    }
+
+    /*Setters i getters*/
     public Renderer getFiguraRenderer(){
         Renderer renderer = figura.GetComponent<Renderer>();
         return renderer;
@@ -38,53 +78,10 @@ public class CardScript : MonoBehaviour
 
     public void setId(double idp){
         id=(int)idp;
-        //set color
     }
 
     public int getId(){
         return id;
     }
-
-    void OnMouseDown()
-    {
-        if(!startVar){
-            return;//Vigilar que funcioni
-        }
-
-        if(gm.GetComponent<GameManager>().canClickTrigger()){
-            gm.GetComponent<GameManager>().setClickTrigger(true);
-            AnimatorStateInfo stateInfo = GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-            if(stateInfo.IsName("FigureDown")){
-                if(gm.gameObject.GetComponent<GameManager>().hiHaPuesto()){
-                    if(stateInfo.IsName("FigureDown")){
-                        Animator an = GetComponent<Animator>();
-                        an.SetTrigger("FigureShowTrigger");
-                    }
-                    gm.GetComponent<GameManager>().cardTouched(gameObject);
-                }else{
-                    Debug.Log("Ja hi ha cartes aixecades!");
-                }
-            }
-        }
-    }
-
-    public void esconder(){
-        AnimatorStateInfo stateInfo = GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName("FigureUp"))
-        {
-            Animator an = GetComponent<Animator>();
-            an.SetTrigger("FigureHideTrigger");
-        }
-    }
-
-    public void showFigure(){
-        AnimatorStateInfo stateInfo = GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName("FigureDown"))
-        {
-            Animator an = GetComponent<Animator>();
-            an.SetTrigger("FigureShowTrigger");
-        }
-    }
-
     
 }

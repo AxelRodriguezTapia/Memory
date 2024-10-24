@@ -12,34 +12,37 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject[] cards;
-    public GameObject[] cardSons;
-    private double id_double=0;
-    private GameObject[] cardsSelected = new GameObject[2];
+    public GameObject[] cards;//Llista de referencies directes a les cartes com a objecte de referencia
+    public GameObject[] cardSons;//Llista de referencies a les cartes com a render es a dir els fills dels objectes
+    private double id_double=0; //Id per asignar parelles de cartes
+    private GameObject[] cardsSelected = new GameObject[2]; //Llista de les dues cartes seleccionades
     private int cartesAdivinades;
-    private bool clickTrigger=false;
-    private float clickCooldown=0;
-    private bool startGameTrigger=false;
+    private bool clickTrigger=false; //Permis per clicar cartes.
+    private float clickCooldown=0; //Un retras per activar el permis de clicar cartes
+    private bool startGameTrigger=false; //Variable per donar pas a l'inici del joc
     public Button startButton;
     public TextMeshProUGUI timeText;
-    private double timeNum;
+    private double timeNum; //Temps total
+    private int intentsNum;
     public TextMeshProUGUI bestTime;
     public TextMeshProUGUI titolText;
     public TextMeshProUGUI intentsText;
-    public AudioClip[] audioClips; 
+    public AudioClip[] audioClips; //Llista de audios
     public AudioSource audioSource; 
 
 
     // Start is called before the first frame update
     void Start()
     {
+        //Al iniciar declarem el listener del boto de start.
         if (startButton != null)
         {
             startButton.onClick.AddListener(AccionBoton);
         }
         titolText.text="Turtle Memory";
-        intentsText.text="Intents: "+PlayerPrefs.GetInt("Intents", 0);
-        bestTime.text="Best Time: "+PlayerPrefs.GetInt("BestScore", 0);
+        intentsNum=0;
+        intentsText.text="Intents: "+intentsNum;
+        bestTime.text="Best Time: "+PlayerPrefs.GetInt("BestScore", 0);//Recuperem el best score de la memoria
         timeText.text="Time: "+0;
         cardsSelected[0]=null;
         cardsSelected[1]=null;
@@ -52,11 +55,12 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //Temps de la partida
         if (startGameTrigger){
             timeNum+=Time.deltaTime;
             timeText.text=("Time: "+(int)timeNum);
         }
+        //Retras per poder pulsar alguna tecla
         if(clickTrigger){
             clickCooldown+=Time.deltaTime;
             if(clickCooldown>=1){
@@ -64,14 +68,17 @@ public class GameManager : MonoBehaviour
                 clickTrigger=false;
             }
         }
-
+        //Comprova si hi ha dues cartes seleccionades
         if(cardsSelected[0]!=null && cardsSelected[1]!=null){
+            //Si es aixi comprova que les cartes estiguin en el estat Up, mostrant la figura
             AnimatorStateInfo stateInfo0 = cardsSelected[0].gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
             AnimatorStateInfo stateInfo1 = cardsSelected[1].gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+            //Un cop estiguin Up comproven les ids...
             if(stateInfo0.IsName("FigureUp") && stateInfo1.IsName("FigureUp")){
                 checkIds();
             }
         }
+        //Si s'han adivinat 8 parelles llavors se acaba el joc.
         if(cartesAdivinades==8){
             audioSource.PlayOneShot(audioClips[4]);
             if(timeNum < PlayerPrefs.GetInt("BestScore", 0)){
@@ -82,17 +89,9 @@ public class GameManager : MonoBehaviour
             titolText.color= Color.yellow;
             Invoke("FinishScene",7);
         }
-        
-        
-    }
-    public bool canClickTrigger(){
-        return !clickTrigger;
     }
 
-    public void setClickTrigger(bool clickTriger){
-        clickTrigger = clickTriger;
-    }
-
+    //Funcio que cridem desde les cartes per avisar al GameManager que alguna ha estat apretada
     public void cardTouched(GameObject cardtouched){
         if(cardsSelected[0]==null && cardsSelected[1]==null){
             cardsSelected[0]=cardtouched.gameObject;
@@ -101,16 +100,16 @@ public class GameManager : MonoBehaviour
             cardsSelected[1]=cardtouched.gameObject;
             audioSource.PlayOneShot(audioClips[1]);
         }   
-        
     }
+
+    //Comprova les ids de les cartes aixecades per saber si son iguals o no.
     public void checkIds(){
         if(cardsSelected[0]!=null && cardsSelected[1]!=null){
             if(cardsSelected[0].GetComponent<CardScript>().getId()!=cardsSelected[1].GetComponent<CardScript>().getId()){
                 cardsSelected[0].GetComponent<CardScript>().esconder();
                 cardsSelected[1].GetComponent<CardScript>().esconder();
-                int intentsNum = PlayerPrefs.GetInt("Intents", 0)+1;
+                intentsNum += 1;
                 intentsText.text = "Intents: "+ intentsNum;
-                PlayerPrefs.SetInt("Intents", intentsNum);
                 audioSource.PlayOneShot(audioClips[2]);
                 borrarSeleccionados(12);
             }else{
@@ -121,10 +120,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Serveix per saber si hi ha mes de 2 cartes seleccionades.
     public bool hiHaPuesto(){
         return cardsSelected[0]==null || cardsSelected[1]==null;
     }
 
+    //Reset de les cartes selecionades.
     public void borrarSeleccionados(int num){
         if(num==0){
             cardsSelected[0]=null;
@@ -138,6 +139,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Barreja una llista de manera al random
     void Mezclar(GameObject[] array)
     {
         int n = array.Length;
@@ -150,6 +152,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Cridem aquesta funcio quan apretem el boto de start, per fer el set de totes les variables.
     void AccionBoton()
     {
         audioSource.PlayOneShot(audioClips[0]);
@@ -157,17 +160,19 @@ public class GameManager : MonoBehaviour
         startButton.gameObject.SetActive(false);
         startGameTrigger=true;
         titolText.text="";
-        PlayerPrefs.SetInt("Intents", 0);
-        intentsText.text="Intents: "+PlayerPrefs.GetInt("Intents", 0);
+        intentsNum=0;
+        intentsText.text="Intents: "+intentsNum;
+        //Asignem ids i figures a les cartes.
         foreach(GameObject card in cardSons){
             card.GetComponent<CardScript>().setId(id_double);
             id_double=id_double+0.5;
             Material materialCargado = Resources.Load<Material>("Materials/FigureMaterial" + card.GetComponent<CardScript>().getId());
             card.GetComponent<CardScript>().getFiguraRenderer().material = materialCargado;
         }
-    
+        //Barrajem les cartes.
         Mezclar(cards);
 
+        //Posicionem les cartes en el seu lloc.
         int i=0;
         for (int x = 0; x < 4; x++)
         {
@@ -179,8 +184,19 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    //Gracies a un Invoke fem reset a la escena per tornar a jugar.
     void FinishScene(){
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
+    }
+
+    /*Setters i getters*/
+    public bool canClickTrigger(){
+        return !clickTrigger;
+    }
+
+    public void setClickTrigger(bool clickTriger){
+        clickTrigger = clickTriger;
     }
 }
