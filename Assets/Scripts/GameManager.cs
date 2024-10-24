@@ -26,11 +26,9 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI bestTime;
     public TextMeshProUGUI titolText;
     public TextMeshProUGUI intentsText;
-    public AudioClip[] audioClips; // Array para almacenar varios clips de audio
-    public AudioSource audioSource;  // Asigna el AudioSource desde el Inspector
+    public AudioClip[] audioClips; 
+    public AudioSource audioSource; 
 
-    //audioSource.clip = audioClips[index];
-    //audioSource.Play();
 
     // Start is called before the first frame update
     void Start()
@@ -41,7 +39,7 @@ public class GameManager : MonoBehaviour
         }
         titolText.text="Turtle Memory";
         intentsText.text="Intents: "+PlayerPrefs.GetInt("Intents", 0);
-        bestTime.text="Best Time: "+PlayerPrefs.GetInt("BestScore", 0);//Buscar el best time en vete tu a saber donde
+        bestTime.text="Best Time: "+PlayerPrefs.GetInt("BestScore", 0);
         timeText.text="Time: "+0;
         cardsSelected[0]=null;
         cardsSelected[1]=null;
@@ -58,7 +56,6 @@ public class GameManager : MonoBehaviour
         if (startGameTrigger){
             timeNum+=Time.deltaTime;
             timeText.text=("Time: "+(int)timeNum);
-            //Debug.Log(timeNum);
         }
         if(clickTrigger){
             clickCooldown+=Time.deltaTime;
@@ -76,13 +73,13 @@ public class GameManager : MonoBehaviour
             }
         }
         if(cartesAdivinades==8){
-            Debug.Log("End Game");
-            audioSource.clip = audioClips[4]; //Audio GameOver
-            audioSource.PlayOneShot();
+            audioSource.PlayOneShot(audioClips[4]);
             if(timeNum < PlayerPrefs.GetInt("BestScore", 0)){
                 PlayerPrefs.SetInt("BestScore", (int)timeNum);
             }
             cartesAdivinades+=1;
+            titolText.text="¡¡New turtle best score!!";
+            titolText.color= Color.yellow;
             Invoke("FinishScene",7);
         }
         
@@ -97,26 +94,15 @@ public class GameManager : MonoBehaviour
     }
 
     public void cardTouched(GameObject cardtouched){
-        //Debug.Log("Me han tocado la carta "+cardtouched.name+" i te la id: "+cardtouched.GetComponent<CardScript>().getId());
-        
         if(cardsSelected[0]==null && cardsSelected[1]==null){
             cardsSelected[0]=cardtouched.gameObject;
-            audioSource.clip = audioClips[1]; //Audio Hola
-            audioSource.PlayOneShot();
-            //Debug.Log("Carta seleccionada");
+            audioSource.PlayOneShot(audioClips[1]);
         }else{
             cardsSelected[1]=cardtouched.gameObject;
-            audioSource.clip = audioClips[1]; //Audio Hola
-            audioSource.PlayOneShot();
+            audioSource.PlayOneShot(audioClips[1]);
         }   
         
     }
-
-    //public void allCardsDown(){
-    //    foreach(GameObject card in cards){
-    //        card.GetComponent<CardScript>().moveDown();
-    //    }
-    //}
     public void checkIds(){
         if(cardsSelected[0]!=null && cardsSelected[1]!=null){
             if(cardsSelected[0].GetComponent<CardScript>().getId()!=cardsSelected[1].GetComponent<CardScript>().getId()){
@@ -125,14 +111,11 @@ public class GameManager : MonoBehaviour
                 int intentsNum = PlayerPrefs.GetInt("Intents", 0)+1;
                 intentsText.text = "Intents: "+ intentsNum;
                 PlayerPrefs.SetInt("Intents", intentsNum);
-                audioSource.clip = audioClips[2]; //Audio Nonono
-                audioSource.PlayOneShot();
+                audioSource.PlayOneShot(audioClips[2]);
                 borrarSeleccionados(12);
             }else{
-                Debug.Log("Cartas iguals!!" +cardsSelected[0].GetComponent<CardScript>().getId()+" "+cardsSelected[1].GetComponent<CardScript>().getId());
                 cartesAdivinades++;
-                audioSource.clip = audioClips[3]; //Audio Oleee
-                audioSource.PlayOneShot();
+                audioSource.PlayOneShot(audioClips[3]);
                 borrarSeleccionados(12);
             }
         }
@@ -160,10 +143,7 @@ public class GameManager : MonoBehaviour
         int n = array.Length;
         for (int i = 0; i < n; i++)
         {
-            // Generar un índice aleatorio entre i y n (exclusivo)
             int randomIndex = Random.Range(i, n);
-
-            // Intercambiar el elemento actual con el elemento aleatorio
             GameObject temp = array[i];
             array[i] = array[randomIndex];
             array[randomIndex] = temp;
@@ -172,8 +152,7 @@ public class GameManager : MonoBehaviour
 
     void AccionBoton()
     {
-        audioSource.clip = audioClips[0]; //Clash royale inici
-        audioSource.PlayOneShot();
+        audioSource.PlayOneShot(audioClips[0]);
         cardSons[0].GetComponent<CardScript>().setStartVar(true);
         startButton.gameObject.SetActive(false);
         startGameTrigger=true;
@@ -183,8 +162,6 @@ public class GameManager : MonoBehaviour
         foreach(GameObject card in cardSons){
             card.GetComponent<CardScript>().setId(id_double);
             id_double=id_double+0.5;
-            Debug.Log(card.GetComponent<CardScript>().getId());
-            Debug.Log("Materials/FigureMaterial" + card.GetComponent<CardScript>().getId());
             Material materialCargado = Resources.Load<Material>("Materials/FigureMaterial" + card.GetComponent<CardScript>().getId());
             card.GetComponent<CardScript>().getFiguraRenderer().material = materialCargado;
         }
@@ -192,23 +169,18 @@ public class GameManager : MonoBehaviour
         Mezclar(cards);
 
         int i=0;
-        // Asignar e instanciar los objetos
         for (int x = 0; x < 4; x++)
         {
             for (int y = 0; y < 4; y++)
             {
-                // Instanciar el prefab en una posición del espacio 3D
-                Vector3 posicion = new Vector3((float)((x * 2)-2), (float)-1.3, (y * 2)-2); // Ajustar la posición de cada objeto
+                Vector3 posicion = new Vector3((float)((x * 2)-2), (float)-1.3, (y * 2)-2);
                 cards[i].transform.position = posicion;
                 i++;
             }
         }
     }
     void FinishScene(){
-        // Obtener el nombre de la escena actual
         string currentSceneName = SceneManager.GetActiveScene().name;
-        
-        // Cargar de nuevo la escena actual
         SceneManager.LoadScene(currentSceneName);
     }
 }
