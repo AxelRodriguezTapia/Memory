@@ -82,12 +82,13 @@ public class GameManager : MonoBehaviour
         if(cartesAdivinades==8){
             audioSource.PlayOneShot(audioClips[4]);
             if(timeNum < PlayerPrefs.GetInt("BestScore", 0)){
+                titolText.text="¡¡New turtle best score!!";
                 PlayerPrefs.SetInt("BestScore", (int)timeNum);
+                titolText.color= Color.yellow;
             }
+            startGameTrigger=false;
             cartesAdivinades+=1;
-            titolText.text="¡¡New turtle best score!!";
-            titolText.color= Color.yellow;
-            Invoke("FinishScene",7);
+            Invoke("FinishScene",5);
         }
     }
 
